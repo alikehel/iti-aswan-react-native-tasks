@@ -2,30 +2,18 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, SectionList, FlatList
 import Card from "./Card";
 import AddCard from "./AddCard";
 
-export default function App({ products, setProducts }) {
-    const deleteCard = (deletedUser) => {
-        const newproducts = products.filter((user) => {
-            return deletedUser != user;
-        });
-        setProducts(newproducts);
-        // console.log(newproducts);
-    };
+export default function App({ products, setProducts, cart, setCart }) {
+    // const deleteCard = (deletedUser) => {
+    //     const newproducts = products.filter((user) => {
+    //         return deletedUser != user;
+    //     });
+    //     setProducts(newproducts);
+    //     // console.log(newproducts);
+    // };
 
-    const markDone = async (item) => {
-        const newproducts = products.filter((user) => {
-            return item != user;
-        }); // const newproducts = products.map((user) => {
-        //     if (user == item) {
-        //         user.done = !user.done;
-        //         return user;
-        //     } else {
-        //         return user;
-        //     }
-        // });
-        item.done = !item.done;
-        newproducts.push(item);
-        setProducts(newproducts);
-        // console.log(newproducts);
+    const addToCart = async (product) => {
+        await setCart([...cart, product]);
+        // console.log(cart);
     };
 
     return (
@@ -47,15 +35,7 @@ export default function App({ products, setProducts }) {
             /> */}
             <ScrollView>
                 {products.map((product) => {
-                    return (
-                        <Card
-                            key={product.id}
-                            product={product}
-                            deleteCard={deleteCard}
-                            markDone={markDone}
-                            style={product.done && styles.done}
-                        />
-                    );
+                    return <Card key={product.id} product={product} addToCart={addToCart} />;
                 })}
             </ScrollView>
         </View>

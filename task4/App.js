@@ -7,10 +7,12 @@ import axios from "axios";
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Cart from "./components/Cart";
 // https://fakestoreapi.com/products
 
 export default function App() {
     const [products, setProducts] = useState([]);
+    const [cart, setCart] = useState([]);
 
     const setProductsStorage = async () => {
         await AsyncStorage.setItem("products", JSON.stringify(products));
@@ -18,6 +20,14 @@ export default function App() {
     const getproductsStorage = async () => {
         const data = JSON.parse(await AsyncStorage.getItem("products"));
         setProducts(data);
+    };
+
+    const setCartStorage = async () => {
+        await AsyncStorage.setItem("cart", JSON.stringify(cart));
+    };
+    const getCartStorage = async () => {
+        const data = JSON.parse(await AsyncStorage.getItem("cart"));
+        setCart(data);
     };
 
     useEffect(async () => {
@@ -41,13 +51,30 @@ export default function App() {
         setProductsStorage();
     }, [products]);
 
+    useEffect(() => {
+        getCartStorage();
+    }, []);
+
+    useEffect(() => {
+        setCartStorage();
+    }, [cart]);
+
     const Tab = createBottomTabNavigator();
 
     return (
         <NavigationContainer>
             <Tab.Navigator>
-                <Tab.Screen name="Cards" children={() => <Cards products={products} setProducts={setProducts} />} />
-                <Tab.Screen name="Text" children={() => <Text>Hello</Text>} options={{ tabBarBadge: 3 }} />
+                <Tab.Screen
+                    name="Cards"
+                    children={() => (
+                        <Cards products={products} setProducts={setProducts} cart={cart} setCart={setCart} />
+                    )}
+                />
+                <Tab.Screen
+                    name="Cart"
+                    children={() => <Cart products={cart} />}
+                    options={{ tabBarBadge: cart.length }}
+                />
             </Tab.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
